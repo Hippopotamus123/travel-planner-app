@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ReactNode } from "react";
+
 import { Plane, Map, Calendar, Star, ArrowRight, Globe2 } from "lucide-react";
 
 type TestimonialCardProps = {
@@ -7,7 +9,11 @@ type TestimonialCardProps = {
   author: string;
   role: string;
 };
-
+type FeatureCardProps = {
+  icon: ReactNode ;
+  title: string;
+  description: string;
+};
 
 const LandingPage = () => {
   return (
@@ -123,7 +129,7 @@ const LandingPage = () => {
   );
 };
 
-const FeatureCard = ({ icon, title, description }) => {
+const FeatureCard = ({ icon, title, description }:FeatureCardProps) => {
   return (
     <Card className="p-6">
       <CardContent className="space-y-4 pt-4">
