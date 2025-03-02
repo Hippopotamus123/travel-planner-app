@@ -1,25 +1,59 @@
 // src/pages/login.tsx
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, SetStateAction } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, EyeOff } from 'lucide-react'; // For password visibility toggle
+import axios from 'axios';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null); // État pour gérer les erreurs
+  const [loading, setLoading] = useState<boolean>(false); // État pour gérer le chargement
 
-  const handleSubmit = (e: FormEvent) => {
+  /*const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     // Add your login logic here (e.g., API call)
     console.log('Login submitted:', { email, password });
-  };
+  };*/
+ const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null); // Réinitialiser les erreurs
+    setLoading(true); // Activer l'état de chargement
 
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/login', {
+        email,
+        password,
+      });
+
+      // Stocker le token dans localStorage ou cookies
+      localStorage.setItem('token', response.data.token);
+      // Rediriger vers le tableau de bord ou une autre page
+      window.location.href = '/dashboard';
+    } catch (error: any) {
+      // Axios encapsule les erreurs dans error.response
+      if (error.response) {
+        setError(error.response.data.message || 'Une erreur est survenue lors de la connexion');
+      } else {
+        setError('Erreur serveur. Veuillez réessayer plus tard.');
+      }
+    } finally {
+      setLoading(false); // Désactiver l'état de chargement
+    }
+  };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-900 dark:to-gray-700">
-      <Card className="w-full max-w-md shadow-lg border border-gray-200 dark:border-gray-700">
+    <div
+ className="min-h-screen flex items-center justify-center bg-cover bg-center"
+      style={{ backgroundImage: "url('/assets/images/hero/background.jpg')" }}
+      
+    >
+       <div className="absolute inset-0 backdrop-blur-xs bg-black/30"></div>
+
+      <Card className="w-full max-w-md shadow-lg border border-gray-200 dark:border-gray-700 z-10">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Welcome Back</CardTitle>
           <CardDescription className="text-center">
@@ -35,7 +69,7 @@ const Login: React.FC = () => {
                 type="email"
                 placeholder="Enter your email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e: { target: { value: SetStateAction<string>; }; }) => setEmail(e.target.value)}
                 required
                 className="w-full"
               />
@@ -48,7 +82,7 @@ const Login: React.FC = () => {
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e: { target: { value: SetStateAction<string>; }; }) => setPassword(e.target.value)}
                   required
                   className="w-full pr-10"
                 />

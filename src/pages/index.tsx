@@ -55,7 +55,7 @@ const Home = () => {
           </div>
           <div className="lg:w-1/2">
             <img 
-              src="/assets/images/hero/traveller.jpg" 
+              src="/assets/images/hero/traveller.jpg"
               alt="Travel Planning Dashboard" 
               className="rounded-lg shadow-2xl"
             />
